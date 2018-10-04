@@ -1,4 +1,7 @@
- #Error messages : Fatal Error Message, I stop this Run
+#This is for filtering failed jobs in PHOTOS++ study.
+
+
+#Error messages : Fatal Error Message, I stop this Run
 ARR_LogFileName=($(ls *.log))
 mkdir -p failed_jobs
 
