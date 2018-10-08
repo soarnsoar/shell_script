@@ -3,11 +3,10 @@
 
 #Error messages : Fatal Error Message, I stop this Run
 
-ARR_ERR_PHR=("Fatal Error Message, I stop this Run" "Error detected in")
-#ARR_ERR_PHR[0]="Fatal Error Message, I stop this Run"
-#ARR_ERR_PHR[1]="Error detected in"
-#ARR_LogFileName=($(ls *.log))
-ARR_LogFileName=($(ls job_0.log))
+ARR_ERR_PHR=("Fatal Error Message, I stop this Run" "Error detected in" "segmentation violation")
+
+ARR_LogFileName=($(ls *.log))
+
 mkdir -p failed_jobs
 
 ####Check whether a logfile has err msg####
