@@ -1,24 +1,129 @@
 #!/bin/bash
+##This is for KISTI job
+function run_template(){
+
+echo '#!/bin/bash' > run_template.sh                           
+echo 'SECTION=`printf %03d $1`' >> run_template.sh
+echo 'WORKDIR=`pwd`'>> run_template.sh
+echo 'echo "#### Extracting cmssw ####"'>> run_template.sh
+echo 'tar -zxvf INPUT.tar.gz'>> run_template.sh
+echo 'echo "#### cmsenv ####"'>> run_template.sh
+echo 'export CMS_PATH=/cvmfs/cms.cern.ch'>> run_template.sh
+echo 'source $CMS_PATH/cmsset_default.sh'>> run_template.sh
+echo 'export SCRAM_ARCH=slc6_amd64_gcc630'>> run_template.sh
+
+echo 'cd CMSSW_9_3_8/src'>> run_template.sh
+echo 'scram build ProjectRename'>> run_template.sh
+echo 'eval `scramv1 runtime -sh`'>> run_template.sh
+echo 'cd ../../'>> run_template.sh
+echo 'cmsRun __SCRIPT__.py'>> run_template.sh
+
+}
+function batch_creater(){
+    echo "===batch_creater_jhchoi.sh==="
+#############Set variable##########
+    #CURDIR=`pwd`
+    JOBNAME="JOB_"$1
+    NJOBS=$2
+    GRIDPACK=$3
+    echo "JOB DIR ="$JOBNAME
+##input tar's name => INPUT.tar.gz
+    
+###################################
+    
+    
+    if [ -z $2 ];then
+	echo "default NJOBs = 1"
+	NJOBS=1
+    fi
+    
+    
+    
+    
+    
+#########Check input argument######
+    if [ -z $1 ];then
+	echo "Need argument"
+	
+	
+#########Check alreay job env######
+    elif [ -d $JOBNAME ];then
+	echo "The job directory alreay exists"
+	
+    else
+	
+##Make tar input
+	
+#tar -cvzf INPUT.tar.gz *
+	echo "===Make INPUT.tar.gz==="
+	
+	
+	tar -czf INPUT_${1}.tar.gz CMSSW* *.py $GRIDPACK
+	
+#$JOBNAME
+	
+	mkdir $JOBNAME
+	pushd $JOBNAME
+	mv ../INPUT_${1}.tar.gz INPUT.tar.gz
+	
+	echo "===Make submit.jds==="
+	
+	echo "executable = run_${1}.sh" >> submit.jds 
+	echo "universe   = vanilla" >> submit.jds
+	echo "arguments  = \$(Process)" >> submit.jds
+	echo "requirements = OpSysMajorVer == 6" >> submit.jds
+	echo "log = condor.log" >> submit.jds
+	echo "getenv     = True" >> submit.jds
+	echo "should_transfer_files = YES" >> submit.jds
+	echo "when_to_transfer_output = ON_EXIT" >> submit.jds
+	echo "output = job_\$(Process).log" >> submit.jds
+	echo "error = job_\$(Process).err" >> submit.jds
+	echo "transfer_input_files = INPUT.tar.gz" >> submit.jds
+#echo "use_x509userproxy = true" >> submit.jds
+	echo "transfer_output_remaps = \"*inDQM.root = OUTPUT_\$(Process).root\"" >> submit.jds
+	echo "queue $NJOBS" >> submit.jds
+	
+	
+	echo "===Make submit.jds DONE.==="
+	
+    fi
+###################################
+    
+    #cd $CURDIR
+    popd
+##then move to $JOBNAME directory and
+##make run.sh script
+##make output file name to OUTPUT.root
+#condor_submit submit.jds
+    
+    
+    echo "batch_creater_jhchoi.sh DONE."
+    
+}
+
 function submit_batch(){
     JOB=$1
     NJOB=$2
     PYTHON=$3
-    source batch_creator.sh $JOB $NJOB
+    GRIDPACK=$4
+    batch_creater $JOB $NJOB $GRIDPACK
     pushd JOB_$JOB
     cp ../run_template.sh run_$JOB.sh
-    cp ../find_and_change_text.py .
+    
     find . -name run_$JOB.sh | xargs perl -pi -e s/__SCRIPT__/$PYTHON/g
     condor_submit submit.jds
     popd
 }
 
+
+##This is main###
 ### settings to modify
 # specify batch system 
 BATCH=LSF # SGE LSF 
 # number of jobs 
-NJOBS=1
+NJOBS=100
 # number of events per job 
-NEVTS=5000  
+NEVTS=50000  
 # path to submit jobs 
 WORKDIR=`pwd -P`
 # path for private fragments not yet in cmssw
@@ -49,6 +154,7 @@ GENFRAGMENTLIST+=( Hadronizer_TuneCP5_13TeV_MLM_5f_max4j_qCut19_LHE_pythia8_cff 
 #GENFRAGMENT=Hadronizer_TuneCUETP8M1_13TeV_aMCatNLO_FXFX_5f_max2j_max0p_LHE_pythia8_cff # zjets fxfx
 #GENFRAGMENT=Hadronizer_TuneCUETP8M1_13TeV_aMCatNLO_FXFX_5f_max2j_max1p_LHE_pythia8_cff # ttbar fxfx 
 ### done with settings 
+
 
 
 ### setup release 
@@ -107,7 +213,7 @@ for ITAG in `seq 0 ${NTAG}`; do
 
 import FWCore.ParameterSet.Config as cms
 externalLHEProducer = cms.EDProducer('ExternalLHEProducer', 
-args = cms.vstring('${GRIDPACK}'),
+args = cms.vstring('${WORKDIR}/${GRIDPACK}'),
 nEvents = cms.untracked.uint32(5000),
 numberOfParameters = cms.uint32(1),  
 outputFile = cms.string('cmsgrid_final.lhe'),
@@ -163,7 +269,8 @@ EOF
 #JOB=$1
 #NJOB=$2
 #PYTHON=$3
-     submit_batch $OTAG $NJOBS cmsrun_$OTAG
+    run_template
+    submit_batch $OTAG $NJOBS cmsrun_$OTAG $GRIDPACK
 
 done # end of tag loop 
 
