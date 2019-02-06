@@ -1,3 +1,6 @@
+#!/bin/bash
+
+
 # shell_script
 shell_commands
 
