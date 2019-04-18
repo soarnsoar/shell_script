@@ -28,3 +28,4 @@ for filedir in ${ARR[@]};do
     find . -name $file | xargs perl -pi -e 's/\+g/g/g'
 
     popd
+done
