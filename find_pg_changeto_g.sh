@@ -25,8 +25,8 @@ for filedir in ${ARR[@]};do
     
     ls $file
 
-    find . -name $file | xargs perl -pi -e 's/C\+g/C\g/g'
-    find . -name $file | xargs perl -pi -e 's/cc\+g/cc\g/g'
-
+    #find . -name $file | xargs perl -pi -e 's/C\+g/C\g/g'
+    #find . -name $file | xargs perl -pi -e 's/cc\+g/cc\g/g'
+    find . -name $file | xargs perl -pi -e 's/\+g/\+/g'
     popd
 done
