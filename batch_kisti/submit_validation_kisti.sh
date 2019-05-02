@@ -89,6 +89,7 @@ function batch_creater(){
 	echo "error = job_\$(Process).err" >> submit.jds
 	echo "transfer_input_files = INPUT.tar.gz" >> submit.jds
 #echo "use_x509userproxy = true" >> submit.jds
+	echo "transfer_output_files = *inDQM.root" >> submit.jds
 	echo "transfer_output_remaps = \"*inDQM.root = OUTPUT_\$(Process).root\"" >> submit.jds
 	echo "queue $NJOBS" >> submit.jds
 	
@@ -128,15 +129,15 @@ function submit_batch(){
 ##This is main###
 ### settings to modify
 # specify batch system 
-BATCH=LSF # SGE LSF 
+
 # number of jobs 
-NJOBS=100
+NJOBS=2
 # number of events per job 
-NEVTS=50000  
+NEVTS=100  
 # path to submit jobs 
 WORKDIR=`pwd -P`
 # path for private fragments not yet in cmssw
-FRAGMENTDIR=${WORKDIR}
+FRAGMENTDIR=${WORKDIR}/fragments
 # release setup 
 #
 export SCRAM_ARCH=slc6_amd64_gcc630
@@ -152,13 +153,15 @@ GRIDPACKLIST=()
 GENFRAGMENTLIST=()
 
 #OTAGLIST+=( dyee012j_261_false_pdfwgt )
-OTAGLIST+=( dyellell01234j_5f_LO_MLM_VMG5_26x_false_pdfwgt dyellell01234j_5f_LO_MLM_VMG5_26x_true_pdfwgt dyellell01234j_5f_LO_MLM_VMG5_261_false_pdfwgt dyellell01234j_5f_LO_MLM_VMG5_261_true_pdfwgt )
+OTAGLIST+=( mg265_dyellell012j_5f_LO_MLM )
 
 #GRIDPACKLIST+=( ${WORKDIR}/dyellell01234j_5f_LO_MLM_VMG5_26x_false_pdfwgt_slc6_amd64_gcc481_CMSSW_7_1_30_tarball.tar.xz ${WORKDIR}/dyellell01234j_5f_LO_MLM_VMG5_26x_true_pdfwgt_slc6_amd64_gcc481_CMSSW_7_1_30_tarball.tar.xz ${WORKDIR}/dyellell01234j_5f_LO_MLM_VMG5_261_false_pdfwgt_slc6_amd64_gcc481_CMSSW_7_1_30_tarball.tar.xz ${WORKDIR}/dyellell01234j_5f_LO_MLM_VMG5_261_true_pdfwgt_slc6_amd64_gcc481_CMSSW_7_1_30_tarball.tar.xz)
 #GENFRAGMENTLIST+=( Hadronizer_TuneCUETP8M1_13TeV_MLM_5f_max2j_LHE_pythia8_cff ) 
-GRIDPACKLIST+=( dyellell01234j_5f_LO_MLM_VMG5_26x_false_pdfwgt_slc6_amd64_gcc481_CMSSW_7_1_30_tarball.tar.xz dyellell01234j_5f_LO_MLM_VMG5_26x_true_pdfwgt_slc6_amd64_gcc481_CMSSW_7_1_30_tarball.tar.xz dyellell01234j_5f_LO_MLM_VMG5_261_false_pdfwgt_slc6_amd64_gcc481_CMSSW_7_1_30_tarball.tar.xz dyellell01234j_5f_LO_MLM_VMG5_261_true_pdfwgt_slc6_amd64_gcc481_CMSSW_7_1_30_tarball.tar.xz)
+GRIDPACKLIST+=( gridpacks/mg265/dyellell012j_5f_LO_MLM_slc6_amd64_gcc630_CMSSW_9_3_8_tarball.tar.xz\
+ )
 
-GENFRAGMENTLIST+=( Hadronizer_TuneCP5_13TeV_MLM_5f_max4j_qCut19_LHE_pythia8_cff Hadronizer_TuneCP5_13TeV_MLM_5f_max4j_qCut19_LHE_pythia8_cff Hadronizer_TuneCP5_13TeV_MLM_5f_max4j_qCut19_LHE_pythia8_cff Hadronizer_TuneCP5_13TeV_MLM_5f_max4j_qCut19_LHE_pythia8_cff )
+GENFRAGMENTLIST+=( Hadronizer_TuneCP5_13TeV_MLM_5f_max2j_qCut20_LHE_pythia8_cff \
+)
 #GENFRAGMENT=Hadronizer_TuneCUETP8M1_13TeV_MLM_5f_max4j_LHE_pythia8_cff # wjets/zjets
 #GENFRAGMENT=Hadronizer_TuneCUETP8M1_13TeV_aMCatNLO_FXFX_5f_max2j_max0p_LHE_pythia8_cff # zjets fxfx
 #GENFRAGMENT=Hadronizer_TuneCUETP8M1_13TeV_aMCatNLO_FXFX_5f_max2j_max1p_LHE_pythia8_cff # ttbar fxfx 
