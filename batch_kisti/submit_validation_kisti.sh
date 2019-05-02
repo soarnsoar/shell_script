@@ -71,9 +71,9 @@ function batch_creater(){
 	echo "executable = run_${1}.sh" > submit.jds 
 	echo "universe   = vanilla" >> submit.jds
 	echo "arguments  = \$(Process)" >> submit.jds
-	if [[ "$HOSTNAME" =~ "ui10" ]];then
-	    echo "requirements = OpSysMajorVer == 6" >> submit.jds
-	elif [[ "$HOSTNAME" =~ "ui20" ]];then
+	
+	
+	if [[ "$HOSTNAME" =~ "sdfarm" ]];then
 	    echo 'requirements = ( HasSingularity == true )' >> submit.jds
 	    echo 'accounting_group = group_cms' >> submit.jds
 	    echo '+SingularityImage = "/cvmfs/singularity.opensciencegrid.org/opensciencegrid/osgvo-el6:latest"' >> submit.jds
