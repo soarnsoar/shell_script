@@ -23,6 +23,7 @@ function batch_creater(){
     echo "===batch_creater_jhchoi.sh==="
 #############Set variable##########
     #CURDIR=`pwd`
+    OTAG=$1
     JOBNAME="JOB_"$1
     NJOBS=$2
     GRIDPACK=$3
@@ -89,8 +90,10 @@ function batch_creater(){
 	echo "error = job_\$(Process).err" >> submit.jds
 	echo "transfer_input_files = INPUT.tar.gz" >> submit.jds
 #echo "use_x509userproxy = true" >> submit.jds
-	echo "transfer_output_files = *inDQM.root" >> submit.jds
-	echo "transfer_output_remaps = \"*inDQM.root = OUTPUT_\$(Process).root\"" >> submit.jds
+	#otag_cff_py_LHE_GEN_VALIDATION_inDQM.root
+	#mg265_dyellell012j_5f_LO_MLM_cff_py_LHE_GEN_VALIDATION_inDQM.root
+	echo "transfer_output_files = ${OTAG}_cff_py_LHE_GEN_VALIDATION_inDQM.root" >> submit.jds
+	echo "transfer_output_remaps = \"${OTAG}_cff_py_LHE_GEN_VALIDATION_inDQM.root = OUTPUT_\$(Process).root\"" >> submit.jds
 	echo "queue $NJOBS" >> submit.jds
 	
 	
@@ -112,6 +115,7 @@ function batch_creater(){
 }
 
 function submit_batch(){
+    OTAG=$1
     JOB=$1
     NJOB=$2
     PYTHON=$3
