@@ -68,10 +68,19 @@ function batch_creater(){
 	
 	echo "===Make submit.jds==="
 	
-	echo "executable = run_${1}.sh" >> submit.jds 
+	echo "executable = run_${1}.sh" > submit.jds 
 	echo "universe   = vanilla" >> submit.jds
 	echo "arguments  = \$(Process)" >> submit.jds
-	echo "requirements = OpSysMajorVer == 6" >> submit.jds
+	if [[ "$HOSTNAME" =~ "ui10" ]];then
+	    echo "requirements = OpSysMajorVer == 6" >> submit.jds
+	elif [[ "$HOSTNAME" =~ "ui20" ]];then
+	    echo 'requirements = ( HasSingularity == true )' >> submit.jds
+	    echo 'accounting_group = group_cms' >> submit.jds
+	    echo '+SingularityImage = "/cvmfs/singularity.opensciencegrid.org/opensciencegrid/osgvo-el6:latest"' >> submit.jds
+	    echo '+SingularityBind = "/cvmfs, /cms, /share"' >> submit.jds
+	elif [[ "$HOSTNAME" =~ "lxplus" ]];then
+	    echo '+JobFlavour = "longlunch"' >> submit.jds
+	fi
 	echo "log = condor.log" >> submit.jds
 	echo "getenv     = True" >> submit.jds
 	echo "should_transfer_files = YES" >> submit.jds
