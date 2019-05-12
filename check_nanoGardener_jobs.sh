@@ -1,6 +1,9 @@
-#JOBDIR=NanoGardening__Autumn18_102X_nAODv4_Full2018
+JOBDIR=NanoGardening__Autumn18_102X_nAODv4_GTv16_Full2018v4
 #JOBDIR=NanoGardening__Summer16_102X_nAODv4_Full2016v4
-JOBDIR=NanoGardening__Run2016_102X_nAODv4_Full2016v4
+#JOBDIR=NanoGardening__Run2016_102X_nAODv4_Full2016v4
+#JOBDIR=NanoGardening__Fall2017_102X_nAODv4_Full2017v4
+#JOBDIR=NanoGardening__Summer16_102X_nAODv4_Full2016v4
+#JOBDIR=NanoGardening__Run2018_102X_nAODv4_14Dec_Full2018v4
 pushd $JOBDIR
 echo "#Enter"
 ARR_ERRFILE=($(ls *.err))
@@ -19,14 +22,22 @@ for errfile in ${ARR_ERRFILE[@]};do
     echo "@@Check shell@@"
     #ls $jobname.sh
     ERR=`cat $errfile | grep error`
-    if [ -z "$ERR" ]
+    REFERR=`cat $errfile | grep ReferenceError`
+    
+    if [ -n "$ERR" ]
     then
-	SUCCESS_LIST+=($jobname)
-	NSUCCESS=`expr $NSUCCESS + 1`
-    else
 	echo "!!!!!!!!!err!!!!!!!!!!"
 	FAIL_LIST+=($jobname)
 	NFAIL=`expr $NFAIL + 1`
+    elif [ -n "REFERR" ]
+    then
+	echo "!!!!!!!!!referr!!!!!!!!!!"
+        FAIL_LIST+=($jobname)
+	NFAIL=`expr $NFAIL + 1`
+
+    else
+	SUCCESS_LIST+=($jobname)
+	NSUCCESS=`expr $NSUCCESS + 1`
     fi
 
 
