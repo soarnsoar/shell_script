@@ -29,7 +29,7 @@ for errfile in ${ARR_ERRFILE[@]};do
 	echo "!!!!!!!!!err!!!!!!!!!!"
 	FAIL_LIST+=($jobname)
 	NFAIL=`expr $NFAIL + 1`
-    elif [ -n "REFERR" ]
+    elif [ -n "$REFERR" ]
     then
 	echo "!!!!!!!!!referr!!!!!!!!!!"
         FAIL_LIST+=($jobname)
