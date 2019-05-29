@@ -1,1 +1,1 @@
- echo 1 | mail -s 'aa' soarnsoar@gmail.com
+ echo contents | mail -s 'title' soarnsoar@gmail.com
