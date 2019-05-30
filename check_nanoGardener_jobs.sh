@@ -1,19 +1,19 @@
 #JOBDIR=NanoGardening__Autumn18_102X_nAODv4_GTv16_Full2018v4
 #JOBDIR=NanoGardening__Summer16_102X_nAODv4_Full2016v4
 #JOBDIR=NanoGardening__Run2016_102X_nAODv4_Full2016v4
-#JOBDIR=NanoGardening__Fall2017_102X_nAODv4_Full2017v4
+JOBDIR=NanoGardening__Fall2017_102X_nAODv4_Full2017v4
 #JOBDIR=NanoGardening__Summer16_102X_nAODv4_Full2016v4
 #JOBDIR=NanoGardening__Run2018_102X_nAODv4_14Dec_Full2018v4
 #JOBDIR=NanoGardening__Autumn18_102X_nAODv4_Full2018
-JOBDIR=NanoGardening__Run2016_102X_nAODv4_Full2016v4
+#JOBDIR=NanoGardening__Run2016_102X_nAODv4_Full2016v4
 #JOBDIR=NanoGardening__Run2017_102X_nAODv4_Full2017v4
-
-
+#TAG='Cor'
+TAG=''
 ##-----Just check .done exists-----##
 pushd $JOBDIR
 echo "#Enter"
-ARR_ERRFILE=($(ls *.err))
-ARR_TOTAL=($(ls *.sh))
+ARR_ERRFILE=($(ls *.err|grep "$TAG"))
+ARR_TOTAL=($(ls *.sh | grep "$TAG"))
 NSUCCESS=0
 NFAIL=0
 NSUBMIT=0
@@ -45,9 +45,12 @@ for errfile in ${ARR_ERRFILE[@]};do
 	#SUCCESS_LIST+=($jobname)
 	#NSUCCESS=`expr $NSUCCESS + 1`
     #fi
-    if [ -e "$jobname".done ];then
+    TRANSFER_ERR=`cat $errfile|grep 'Server responded with an error'`
+    if [[ -e "$jobname".done ]] && [[ -z "$TRANSFER_ERR" ]];then
+
 	SUCCESS_LIST+=($jobname)
         NSUCCESS=`expr $NSUCCESS + 1`
+
     else
 	FAIL_LIST+=($jobname)                                                                                                                                
         NFAIL=`expr $NFAIL + 1`                                                                                                                              
