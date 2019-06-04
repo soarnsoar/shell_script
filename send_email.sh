@@ -1,1 +1,1 @@
- echo contents | mail -s 'title' soarnsoar@gmail.com
+ echo contents | /bin/mailx -s 'title' soarnsoar@gmail.com
