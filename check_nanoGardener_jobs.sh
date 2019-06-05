@@ -1,7 +1,7 @@
 #JOBDIR=NanoGardening__Autumn18_102X_nAODv4_GTv16_Full2018v4
-JOBDIR=NanoGardening__Summer16_102X_nAODv4_Full2016v4
+#JOBDIR=NanoGardening__Summer16_102X_nAODv4_Full2016v4
 #JOBDIR=NanoGardening__Run2016_102X_nAODv4_Full2016v4
-#JOBDIR=NanoGardening__Fall2017_102X_nAODv4_Full2017v4
+JOBDIR=NanoGardening__Fall2017_102X_nAODv4_Full2017v4
 #JOBDIR=NanoGardening__Run2017_102X_nAODv4_Full2017v4
 #JOBDIR=NanoGardening__Run2018_102X_nAODv4_14Dec_Full2018v4
 #JOBDIR=NanoGardening__Autumn18_102X_nAODv4_Full2018
@@ -170,11 +170,14 @@ if [ $isresubmit -eq 1 ];then
 	mv $failjob.err fail_jobs/
 	mv $failjob.log fail_jobs/
 	mv $failjob.done fail_jobs/
+	
+	
 
 	if [ $isclear -eq 1 ];then
 	##resubmit via latino command(not using condor_submit)
-	mv $failjob.sh fail_jobs/
-	mv $failjob.py fail_jobs/
+	mv $failjob.* fail_jobs/
+	#mv $failjob.py fail_jobs/
+	#mv $failjob.jid fail_jobs/
 	fi
 	if [ $recondor -eq 1 ];then
 	condor_submit $failjob.jds &> $failjob.jid
